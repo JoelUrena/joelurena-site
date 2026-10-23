@@ -1,0 +1,101 @@
+---
+import { Picture } from 'astro:assets';
+import { type Video, excerpt as getExcerpt, formatDate } from '../data/videos';
+
+interface Props {
+	video: Video;
+	/** Show a short description under the title. */
+	excerpt?: boolean;
+	headingLevel?: 'h2' | 'h3';
+	/** Load the thumbnail eagerly (cards in the first row of a page). */
+	priority?: boolean;
+}
+
+const { video, excerpt = false, headingLevel: Heading = 'h3', priority = false } = Astro.props;
+const href = `/jufi/videos/${video.slug}/`;
+---
+
+<article class="card">
+	<Picture
+		src={video.thumbnail}
+		alt=""
+		formats={['avif', 'webp']}
+		widths={[400, 640, 800]}
+		sizes="(min-width: 74rem) 17rem, (min-width: 68.5rem) calc((100vw - 6.5rem) / 4), (min-width: 51.5rem) calc((100vw - 5rem) / 3), (min-width: 34.5rem) calc((100vw - 3.5rem) / 2), calc(100vw - 2rem)"
+		loading={priority ? 'eager' : 'lazy'}
+		fetchpriority={priority ? 'high' : 'auto'}
+	/>
+	<div class="body">
+		<Heading class="title"><a href={href}>{video.title}</a></Heading>
+		<p class="date"><time datetime={video.date}>{formatDate(video.date)}</time></p>
+		{excerpt && video.description[0] && <p class="excerpt">{getExcerpt(video)}</p>}
+	</div>
+</article>
+
+<style>
+	.card {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		background: var(--surface);
+		border: 1px solid var(--border);
+		border-radius: var(--radius);
+		overflow: hidden;
+		transition: border-color 0.15s, transform 0.15s;
+	}
+
+	.card:hover,
+	.card:focus-within {
+		border-color: var(--gold);
+		transform: translateY(-2px);
+	}
+
+	.card :global(img) {
+		aspect-ratio: 16 / 9;
+		width: 100%;
+		object-fit: cover;
+		background: #000;
+	}
+
+	.body {
+		padding: 1rem 1.1rem 1.2rem;
+	}
+
+	.title {
+		font-size: 1.0625rem;
+		margin-bottom: 0.35rem;
+	}
+
+	/* The whole card is clickable through the title link. */
+	.title a {
+		color: var(--text);
+		text-decoration: none;
+	}
+
+	.title a::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+	}
+
+	.title a:focus-visible {
+		outline: none;
+	}
+
+	.card:has(.title a:focus-visible) {
+		outline: 3px solid var(--gold-bright);
+		outline-offset: 3px;
+	}
+
+	.date {
+		color: var(--gold);
+		font-size: 0.875rem;
+		margin: 0;
+	}
+
+	.excerpt {
+		color: var(--muted);
+		font-size: 0.9375rem;
+		margin: 0.6rem 0 0;
+	}
+</style>

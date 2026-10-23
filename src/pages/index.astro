@@ -1,0 +1,187 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Footer from '../components/Footer.astro';
+import Icon from '../components/Icon.astro';
+import YouTube from '../components/YouTube.astro';
+import { site } from '../data/site';
+import { videos } from '../data/videos';
+import jufiWordmark from '../assets/brand/jufi-wordmark.png';
+import reelPoster from '../assets/thumbs/producer-reel.jpg';
+---
+
+<Base
+	title="Joel Ureña"
+	description="Computer science graduate and filmmaker. Watch my films, browse my code on GitHub, or play my Unity game."
+	bodyClass="home"
+>
+	<main id="main">
+		<section class="hero">
+			<div class="container hero-inner">
+				<p class="kicker">You have reached…</p>
+				<h1 class="name"><span>Joel</span> <span>Ureña</span></h1>
+				<p class="domain">(.com)</p>
+				<p class="intro">
+					Computer science graduate and filmmaker. Watch my films, browse my code, or play the game.
+				</p>
+				<div class="actions">
+					<a class="button primary" href="#reel">Watch my producer reel</a>
+					<a class="button" href="/jufi/">See my films</a>
+					<a class="button" href={`mailto:${site.email}`}>Email me</a>
+				</div>
+			</div>
+		</section>
+
+		<section id="reel" class="section container" aria-labelledby="reel-title">
+			<p class="eyebrow">Latest</p>
+			<h2 id="reel-title">Producer reel</h2>
+			<YouTube id={site.producerReel} title="Joel Ureña – Producer Reel" poster={reelPoster} />
+		</section>
+
+		<section class="section container" aria-labelledby="work-title">
+			<p class="eyebrow">Work</p>
+			<h2 id="work-title">What I make</h2>
+			<ul class="work">
+				<li class="work-card">
+					<Image src={jufiWordmark} alt="" width={480} class="work-art jufi" />
+					<h3><a href="/jufi/">JUFI films</a></h3>
+					<p>{videos.length} short films, a documentary and class projects from 2016 to 2020.</p>
+				</li>
+				<li class="work-card">
+					<span class="work-art icon"><Icon name="github" size={64} /></span>
+					<h3><a href="https://github.com/JoelUrena">Code on GitHub</a></h3>
+					<p>My programming projects and source code.</p>
+				</li>
+				<li class="work-card">
+					<span class="work-art icon" aria-hidden="true">
+						<svg width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="6"></rect><path d="M7 10v4M5 12h4"></path><circle cx="15.5" cy="11" r="0.6" fill="currentColor"></circle><circle cx="17.5" cy="13" r="0.6" fill="currentColor"></circle></svg>
+					</span>
+					<h3><a href="/games/ocelot-overide/">Ocelot Overide</a></h3>
+					<p>A Unity game you can play in the browser. It’s about a 16&nbsp;MB download and works best on a computer.</p>
+				</li>
+			</ul>
+		</section>
+
+	</main>
+	<Footer />
+</Base>
+
+<style>
+	.hero {
+		background: #000 url('/images/stars.gif') repeat;
+		border-bottom: 1px solid var(--border);
+		text-align: center;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.hero {
+			background-image: url('/images/stars-still.png');
+		}
+	}
+
+	.hero-inner {
+		padding-block: clamp(4rem, 14vh, 8rem);
+	}
+
+	.kicker,
+	.domain {
+		font-family: var(--font-display);
+		font-weight: 600;
+		color: var(--gold);
+		font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+		margin: 0;
+	}
+
+	.name {
+		font-size: clamp(3.75rem, 14vw, 7.5rem);
+		font-weight: 600;
+		line-height: 1;
+		margin: 0.35em 0 0.3em;
+		animation: rise 1.2s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+	}
+
+	.name span {
+		display: block;
+	}
+
+	.domain {
+		animation: rise 1.2s 0.3s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+	}
+
+	@keyframes rise {
+		from {
+			opacity: 0;
+			transform: translateY(0.4em) scale(0.96);
+		}
+	}
+
+	.intro {
+		max-width: 34rem;
+		margin: 2rem auto 2rem;
+		font-size: 1.1875rem;
+		color: #dcdce0;
+	}
+
+	.actions {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		gap: 0.75rem;
+	}
+
+	.work {
+		list-style: none;
+		margin: 1.5rem 0 0;
+		padding: 0;
+		display: grid;
+		gap: 1.5rem;
+		grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+	}
+
+	.work-card {
+		position: relative;
+		padding: 1.5rem;
+		background: var(--surface);
+		border: 1px solid var(--border);
+		border-radius: var(--radius);
+		transition: border-color 0.15s, transform 0.15s;
+	}
+
+	.work-card:hover,
+	.work-card:focus-within {
+		border-color: var(--gold);
+		transform: translateY(-2px);
+	}
+
+	.work-card h3 a {
+		color: var(--text);
+		text-decoration: none;
+	}
+
+	.work-card h3 a::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+	}
+
+	.work-card p {
+		color: var(--muted);
+		margin: 0;
+	}
+
+	.work-art {
+		height: 6rem;
+		margin-bottom: 1.25rem;
+	}
+
+	.work-art.jufi {
+		width: auto;
+		object-fit: contain;
+	}
+
+	.work-art.icon {
+		display: flex;
+		align-items: center;
+		color: var(--text);
+	}
+</style>

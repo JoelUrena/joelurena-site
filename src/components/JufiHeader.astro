@@ -1,0 +1,98 @@
+---
+import { Image } from 'astro:assets';
+import wordmark from '../assets/brand/jufi-wordmark-small.png';
+
+const path = Astro.url.pathname;
+const links = [
+	{ href: '/jufi/', label: 'Films' },
+	{ href: '/jufi/videos/', label: 'All videos' },
+	{ href: '/', label: 'Joel Ureña' },
+];
+---
+
+<header class="site-header">
+	<div class="container bar">
+		<a class="brand" href="/jufi/">
+			<Image src={wordmark} alt="JUFI – Joel Ureña Films Incorporated" width={141} height={49} loading="eager" />
+		</a>
+		<nav aria-label="Main">
+			<ul>
+				{
+					links.map((l) => (
+						<li>
+							<a href={l.href} aria-current={path === l.href ? 'page' : undefined}>
+								{l.label}
+							</a>
+						</li>
+					))
+				}
+				<li><a class="contact" href="#contact">Contact</a></li>
+			</ul>
+		</nav>
+	</div>
+</header>
+
+<style>
+	.site-header {
+		background: rgb(17 17 20 / 0.92);
+		border-bottom: 1px solid var(--border);
+	}
+
+	/* Sticky only where the header fits on one row; on phones it would cover focused links.
+	   global.css reserves matching scroll-padding-top. */
+	@media (min-width: 40rem) {
+		.site-header {
+			position: sticky;
+			top: 0;
+			z-index: 10;
+			backdrop-filter: blur(8px);
+		}
+	}
+
+	.bar {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+		min-height: 4rem;
+		flex-wrap: wrap;
+		padding-block: 0.5rem;
+	}
+
+	.brand img {
+		height: 2.25rem;
+		width: auto;
+	}
+
+	ul {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.25rem 1.25rem;
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		font-family: var(--font-display);
+		font-weight: 600;
+		font-size: 0.9375rem;
+	}
+
+	nav a {
+		color: var(--muted);
+		text-decoration: none;
+		padding-block: 0.4rem;
+	}
+
+	nav a:hover,
+	nav a[aria-current='page'] {
+		color: var(--text);
+	}
+
+	nav a[aria-current='page'] {
+		box-shadow: inset 0 -2px 0 var(--gold);
+	}
+
+	.contact {
+		color: var(--gold-bright) !important;
+	}
+</style>

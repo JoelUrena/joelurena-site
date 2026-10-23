@@ -1,0 +1,146 @@
+---
+import { getImage } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import JufiHeader from '../../components/JufiHeader.astro';
+import Footer from '../../components/Footer.astro';
+import VideoCard from '../../components/VideoCard.astro';
+import YouTube from '../../components/YouTube.astro';
+import { notableVideos, videos } from '../../data/videos';
+import introPoster from '../../assets/brand/jufi-intro-poster.png';
+
+const reel = videos.find((v) => v.slug === 'film-reel')!;
+const poster = await getImage({ src: introPoster, format: 'webp', width: 1148 });
+const socialImage = await getImage({ src: introPoster, format: 'jpeg', width: 1200, height: 630, fit: 'cover' });
+---
+
+<Base
+	title="JUFI – Joel Ureña Films Incorporated"
+	description="Short films, a documentary and class projects by Joel Ureña, 2016–2020, including a documentary made with HBO and a film in the Museum of the Moving Image’s Jim Henson exhibit."
+	image={socialImage.src}
+>
+	<JufiHeader />
+	<main id="main">
+		<section class="section container intro">
+			<p class="eyebrow">JUFI</p>
+			<h1>Joel Ureña Films Incorporated</h1>
+			<p class="lede">
+				Short films, a documentary and class projects I made from 2016 to 2020, from a documentary made with HBO to a
+				film that’s part of the Jim Henson exhibit at the Museum of the Moving Image.
+			</p>
+
+			<div class="showcase">
+				<figure class="logo">
+					<!-- Playback is started by the script below, so visitors who prefer reduced motion only get the poster. -->
+					<video id="jufi-intro" muted loop playsinline preload="none" width="1148" height="800" poster={poster.src}>
+						<source src="/media/jufi-intro.av1.webm" type='video/webm; codecs="av01.0.05M.08"' />
+						<source src="/media/jufi-intro.webm" type='video/webm; codecs="vp9"' />
+						<source src="/media/jufi-intro.mp4" type="video/mp4" />
+					</video>
+					<figcaption class="visually-hidden">Animated JUFI logo</figcaption>
+					<button type="button" class="pause" hidden>Pause animation</button>
+				</figure>
+				<div>
+					<YouTube
+						id={reel.youtubeId!}
+						title="Welcome to JUFI – Film Reel"
+						poster={reel.thumbnail}
+						priority
+						sizes="(min-width: 60rem) 34rem, 100vw"
+					/>
+					<p class="caption">My film reel: just about all of my completed films in a one-minute compilation.</p>
+				</div>
+			</div>
+		</section>
+
+		<section class="section container" aria-labelledby="notable-title">
+			<h2 id="notable-title">Notable films</h2>
+			<p class="lede">My most recent and notable films.</p>
+			<div class="grid notable">
+				{notableVideos.map((video) => <VideoCard video={video} excerpt />)}
+			</div>
+			<p class="more">
+				<a class="button primary" href="/jufi/videos/">Browse all {videos.length} videos</a>
+			</p>
+		</section>
+	</main>
+	<Footer />
+
+	<script>
+		const video = document.querySelector<HTMLVideoElement>('#jufi-intro');
+		const button = document.querySelector<HTMLButtonElement>('.pause');
+		const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+		const saveData = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData;
+		if (video && button && !reducedMotion && !saveData) {
+			const play = () => {
+				video.play().catch(() => {});
+				button.textContent = 'Pause animation';
+			};
+			const pause = () => {
+				video.pause();
+				button.textContent = 'Play animation';
+			};
+			button.hidden = false;
+			button.addEventListener('click', () => (video.paused ? play() : pause()));
+			play();
+		}
+	</script>
+</Base>
+
+<style>
+	.intro h1 {
+		font-size: clamp(2rem, 5vw, 3.25rem);
+	}
+
+	.showcase {
+		display: grid;
+		gap: 1.5rem;
+		margin-top: 2.5rem;
+		grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr));
+		align-items: start;
+	}
+
+	.logo {
+		position: relative;
+		margin: 0;
+		background: #000;
+		border-radius: var(--radius);
+		overflow: hidden;
+	}
+
+	.logo video {
+		width: 100%;
+		aspect-ratio: 1148 / 800;
+		object-fit: cover;
+	}
+
+	.pause {
+		position: absolute;
+		right: 0.6rem;
+		top: 0.6rem;
+		padding: 0.3rem 0.7rem;
+		border-radius: 999px;
+		border: 1px solid var(--border);
+		background: rgb(0 0 0 / 0.7);
+		color: var(--muted);
+		font: 600 0.75rem var(--font-display);
+		cursor: pointer;
+	}
+
+	.pause:hover {
+		color: var(--text);
+	}
+
+	.caption {
+		color: var(--muted);
+		font-size: 0.9375rem;
+		margin-top: 0.75rem;
+	}
+
+	.notable {
+		margin-top: 1.5rem;
+	}
+
+	.more {
+		margin-top: 2.5rem;
+	}
+</style>

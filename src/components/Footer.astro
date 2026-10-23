@@ -1,0 +1,67 @@
+---
+import { site } from '../data/site';
+import SocialLinks from './SocialLinks.astro';
+---
+
+<footer id="contact" class="footer">
+	<div class="container footer-inner">
+		<div>
+			<h2>Get in touch</h2>
+			<p>Email <a href={`mailto:${site.email}`}>{site.email}</a> or find me on:</p>
+			<SocialLinks />
+		</div>
+		<nav aria-label="Footer">
+			<ul>
+				<li><a href="/">Home</a></li>
+				<li><a href="/jufi/">JUFI films</a></li>
+				<li><a href="/jufi/videos/">All videos</a></li>
+				<li><a href="/games/ocelot-overide/">Ocelot Overide</a></li>
+			</ul>
+		</nav>
+	</div>
+	<p class="container fine-print">© {new Date().getFullYear()} {site.name}</p>
+</footer>
+
+<style>
+	.footer {
+		border-top: 1px solid var(--border);
+		background: var(--surface);
+		padding-block: 3rem 1.5rem;
+	}
+
+	.footer-inner {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: space-between;
+		gap: 2rem;
+	}
+
+	h2 {
+		font-size: 1.5rem;
+	}
+
+	ul {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: grid;
+		gap: 0.4rem;
+	}
+
+	nav a {
+		color: var(--muted);
+		text-decoration: none;
+	}
+
+	nav a:hover {
+		color: var(--text);
+		text-decoration: underline;
+	}
+
+	.fine-print {
+		margin-top: 2.5rem;
+		margin-bottom: 0;
+		color: var(--muted);
+		font-size: 0.875rem;
+	}
+</style>

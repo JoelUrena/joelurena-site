@@ -1,0 +1,174 @@
+---
+import { Picture, getImage } from 'astro:assets';
+import Base from '../../../layouts/Base.astro';
+import JufiHeader from '../../../components/JufiHeader.astro';
+import Footer from '../../../components/Footer.astro';
+import YouTube from '../../../components/YouTube.astro';
+import { type Video, excerpt, formatDate, videos } from '../../../data/videos';
+
+export function getStaticPaths() {
+	return videos.map((video, i) => ({
+		params: { slug: video.slug },
+		props: { video, newer: videos[i - 1], older: videos[i + 1] },
+	}));
+}
+
+interface Props {
+	video: Video;
+	newer?: Video;
+	older?: Video;
+}
+
+const { video, newer, older } = Astro.props;
+const socialImage = await getImage({ src: video.thumbnail, format: 'jpeg', width: 1200 });
+// Led by the title so films with the same blurb (Departure, Purgatory) still get unique descriptions.
+const description = [`${video.title} (${formatDate(video.date)}), a JUFI film by Joel Ureña.`, excerpt(video, 110)]
+	.filter(Boolean)
+	.join(' ');
+---
+
+<Base title={`${video.title} – JUFI`} description={description} image={socialImage.src}>
+	<JufiHeader />
+	<main id="main" class="section container">
+		<p class="back"><a href="/jufi/videos/">← All videos</a></p>
+		<article>
+			<header>
+				<h1>{video.title}</h1>
+				<p class="date"><time datetime={video.date}>{formatDate(video.date)}</time></p>
+			</header>
+
+			{
+				video.youtubeId ? (
+					<YouTube id={video.youtubeId} title={video.title} poster={video.thumbnail} priority />
+				) : (
+					<Picture
+						src={video.thumbnail}
+						alt={`Still from ${video.title}`}
+						formats={['avif', 'webp']}
+						widths={[480, 800, 1280]}
+						sizes="(min-width: 72rem) 70rem, 100vw"
+						loading="eager"
+						fetchpriority="high"
+						class="still"
+					/>
+				)
+			}
+
+			<div class="text">
+				{video.description.map((paragraph) => <p>{paragraph}</p>)}
+				{
+					video.links && (
+						<ul class="links">
+							{video.links.map((link) => (
+								<li>
+									<a href={link.href}>{link.label}</a>
+								</li>
+							))}
+						</ul>
+					)
+				}
+			</div>
+		</article>
+
+		<nav class="pager" aria-label="More videos">
+			{
+				newer && (
+					<a href={`/jufi/videos/${newer.slug}/`} rel="prev">
+						<span>Newer</span>
+						{newer.title}
+					</a>
+				)
+			}
+			{
+				older && (
+					<a href={`/jufi/videos/${older.slug}/`} rel="next" class="older">
+						<span>Older</span>
+						{older.title}
+					</a>
+				)
+			}
+		</nav>
+	</main>
+	<Footer />
+</Base>
+
+<style>
+	main {
+		max-width: 60rem;
+	}
+
+	.back {
+		margin-bottom: 1.5rem;
+	}
+
+	.back a {
+		color: var(--muted);
+		text-decoration: none;
+		font-weight: 600;
+	}
+
+	.back a:hover {
+		color: var(--text);
+	}
+
+	h1 {
+		font-size: clamp(1.75rem, 4.5vw, 2.75rem);
+	}
+
+	.date {
+		color: var(--gold);
+		margin-bottom: 1.5rem;
+	}
+
+	.still {
+		width: 100%;
+		aspect-ratio: 16 / 9;
+		object-fit: cover;
+		border-radius: var(--radius);
+	}
+
+	.text {
+		max-width: 42rem;
+		margin-top: 2rem;
+		font-size: 1.125rem;
+	}
+
+	.links {
+		padding-left: 1.2rem;
+	}
+
+	.pager {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: space-between;
+		gap: 1rem;
+		margin-top: 3rem;
+		padding-top: 1.5rem;
+		border-top: 1px solid var(--border);
+	}
+
+	.pager a {
+		display: grid;
+		max-width: 22rem;
+		color: var(--text);
+		text-decoration: none;
+		font-family: var(--font-display);
+		font-weight: 600;
+	}
+
+	.pager a:hover {
+		color: var(--gold-bright);
+	}
+
+	.pager span {
+		color: var(--muted);
+		font-size: 0.8125rem;
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+	}
+
+	.pager .older {
+		margin-left: auto;
+		text-align: right;
+	}
+</style>
