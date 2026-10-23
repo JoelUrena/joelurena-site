@@ -29,7 +29,7 @@ const { id, title, poster, priority = false, sizes = '(min-width: 72rem) 70rem, 
 			fetchpriority={priority ? 'high' : 'auto'}
 		/>
 		<span class="yt-play" aria-hidden="true">
-			<svg viewBox="0 0 68 48" width="68" height="48"><path d="M66.5 7.7a8.5 8.5 0 0 0-6-6C55.2.3 34 .3 34 .3s-21.2 0-26.5 1.4a8.5 8.5 0 0 0-6 6C.1 13 .1 24 .1 24s0 11 1.4 16.3a8.5 8.5 0 0 0 6 6C12.8 47.7 34 47.7 34 47.7s21.2 0 26.5-1.4a8.5 8.5 0 0 0 6-6C67.9 35 67.9 24 67.9 24s0-11-1.4-16.3z" fill="#e00"></path><path d="M45 24 27 14v20" fill="#fff"></path></svg>
+			<span class="badge angular"><svg viewBox="0 0 24 24" width="28" height="28"><path d="M8 5v14l11-7z" fill="currentColor"></path></svg></span>
 		</span>
 		<span class="visually-hidden">Play video: {title}</span>
 	</a>
@@ -81,14 +81,21 @@ const { id, title, poster, priority = false, sizes = '(min-width: 72rem) 70rem, 
 		inset: 0;
 		display: grid;
 		place-items: center;
-		opacity: 0.88;
-		transition: opacity 0.2s, transform 0.2s;
 	}
 
-	.yt-link:hover .yt-play,
-	.yt-link:focus-visible .yt-play {
-		opacity: 1;
-		transform: scale(1.08);
+	/* Angular play badge: the shape comes from .angular in global.css. */
+	.badge {
+		--fill: var(--silver);
+		display: grid;
+		place-items: center;
+		width: 4.25rem;
+		height: 3rem;
+		color: #000;
+	}
+
+	.yt-link:hover .badge,
+	.yt-link:focus-visible .badge {
+		--fill: #fff;
 	}
 
 	.yt-link:hover :global(img) {

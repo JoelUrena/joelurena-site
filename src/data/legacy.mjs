@@ -1,4 +1,4 @@
-// Every URL the 2020 site published, mapped to where it lives now.
+// Every URL the 2020 site published, mapped to where it lives now (plus a few new short links, marked).
 // The build writes a small redirect page for each key (see integrations/legacy-redirects.mjs),
 // and 404.astro uses the same map for case-insensitive fallbacks like /Jufi or /CODE.
 //
@@ -12,6 +12,7 @@ const VIDEOS = '/jufi/videos/';
 // Résumés are deliberately not published (they contained a home address), so old résumé links
 // land on the contact section instead.
 const CONTACT = '/#contact';
+const GAME = '/games/ocelot-override/';
 
 // Old file name in jufi/videos/myvid/ -> new slug under /jufi/videos/
 export const legacyVideoPages = {
@@ -50,7 +51,10 @@ export const legacyRedirects = {
 	'jufi.html': FILM,
 	'JUFI.html': FILM,
 	'videos.html': VIDEOS,
-	'ocelot-overide.html': '/games/ocelot-overide/',
+	// The game moved from the misspelled /games/ocelot-overide/ to /games/ocelot-override/.
+	'ocelot-overide.html': GAME,
+	'games/ocelot-overide/index.html': GAME,
+	'ocelot-override.html': GAME, // not an old URL: the short link with the corrected spelling
 	'resume_csci.html': CONTACT,
 	'resume_film.html': CONTACT,
 	'doge.html': CONTACT,

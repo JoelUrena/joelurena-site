@@ -18,8 +18,11 @@ import reelPoster from '../assets/thumbs/producer-reel.jpg';
 	<main id="main">
 		<section class="hero">
 			<div class="container hero-inner">
-				<p class="kicker">You have reached…</p>
-				<h1 class="name"><span>Joel</span> <span>Ureña</span></h1>
+				<!-- Pops up like the Star Wars logo over the stars, as on the 2020 site. -->
+				<div class="pop">
+					<p class="kicker">You have reached…</p>
+					<h1 class="name"><span>Joel</span> <span>Ureña</span></h1>
+				</div>
 				<p class="domain">(.com)</p>
 				<p class="intro">
 					Computer science graduate and filmmaker. Watch my films, browse my code, or play the game.
@@ -54,9 +57,9 @@ import reelPoster from '../assets/thumbs/producer-reel.jpg';
 				</li>
 				<li class="work-card">
 					<span class="work-art icon" aria-hidden="true">
-						<svg width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="6"></rect><path d="M7 10v4M5 12h4"></path><circle cx="15.5" cy="11" r="0.6" fill="currentColor"></circle><circle cx="17.5" cy="13" r="0.6" fill="currentColor"></circle></svg>
+						<svg width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="miter"><path d="M5 6.5h14l3 3v5l-3 3H5l-3-3v-5z"></path><path d="M7 10v4M5 12h4"></path><path d="M15.5 9.8l1 1-1 1-1-1zM17.5 12.2l1 1-1 1-1-1z" fill="currentColor" stroke="none"></path></svg>
 					</span>
-					<h3><a href="/games/ocelot-overide/">Ocelot Overide</a></h3>
+					<h3><a href="/games/ocelot-override/">Ocelot Override</a></h3>
 					<p>A Unity game you can play in the browser. It’s about a 16&nbsp;MB download and works best on a computer.</p>
 				</li>
 			</ul>
@@ -71,11 +74,17 @@ import reelPoster from '../assets/thumbs/producer-reel.jpg';
 		background: #000 url('/images/stars.gif') repeat;
 		border-bottom: 1px solid var(--border);
 		text-align: center;
+		overflow: hidden;
 	}
 
 	@media (prefers-reduced-motion: reduce) {
 		.hero {
 			background-image: url('/images/stars-still.png');
+		}
+
+		.pop,
+		.domain {
+			animation: none;
 		}
 	}
 
@@ -87,7 +96,7 @@ import reelPoster from '../assets/thumbs/producer-reel.jpg';
 	.domain {
 		font-family: var(--font-display);
 		font-weight: 600;
-		color: var(--gold);
+		color: var(--muted);
 		font-size: clamp(1.1rem, 2.5vw, 1.4rem);
 		margin: 0;
 	}
@@ -97,21 +106,37 @@ import reelPoster from '../assets/thumbs/producer-reel.jpg';
 		font-weight: 600;
 		line-height: 1;
 		margin: 0.35em 0 0.3em;
-		animation: rise 1.2s cubic-bezier(0.2, 0.7, 0.2, 1) both;
 	}
 
 	.name span {
 		display: block;
 	}
 
-	.domain {
-		animation: rise 1.2s 0.3s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+	/* The 2020 site used animate.css's zoomInUp (1.5s) on the name and fadeIn on "(.com)". */
+	.pop {
+		animation: zoom-in-up 1.5s 0.25s both;
 	}
 
-	@keyframes rise {
+	.domain {
+		animation: fade-in 1.5s 0.25s both;
+	}
+
+	@keyframes zoom-in-up {
 		from {
 			opacity: 0;
-			transform: translateY(0.4em) scale(0.96);
+			transform: scale3d(0.1, 0.1, 0.1) translate3d(0, 1000px, 0);
+			animation-timing-function: cubic-bezier(0.55, 0.055, 0.675, 0.19);
+		}
+		60% {
+			opacity: 1;
+			transform: scale3d(0.475, 0.475, 0.475) translate3d(0, -60px, 0);
+			animation-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1);
+		}
+	}
+
+	@keyframes fade-in {
+		from {
+			opacity: 0;
 		}
 	}
 
@@ -119,7 +144,7 @@ import reelPoster from '../assets/thumbs/producer-reel.jpg';
 		max-width: 34rem;
 		margin: 2rem auto 2rem;
 		font-size: 1.1875rem;
-		color: #dcdce0;
+		color: var(--silver);
 	}
 
 	.actions {
@@ -149,7 +174,7 @@ import reelPoster from '../assets/thumbs/producer-reel.jpg';
 
 	.work-card:hover,
 	.work-card:focus-within {
-		border-color: var(--gold);
+		border-color: var(--muted);
 		transform: translateY(-2px);
 	}
 

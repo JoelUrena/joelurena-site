@@ -6,11 +6,13 @@ import Footer from '../../components/Footer.astro';
 import VideoCard from '../../components/VideoCard.astro';
 import YouTube from '../../components/YouTube.astro';
 import { notableVideos, videos } from '../../data/videos';
-import introPoster from '../../assets/brand/jufi-intro-poster.png';
+import introFirst from '../../assets/brand/jufi-intro-first.png';
+import introLast from '../../assets/brand/jufi-intro-last.png';
 
 const reel = videos.find((v) => v.slug === 'film-reel')!;
-const poster = await getImage({ src: introPoster, format: 'webp', width: 1148 });
-const socialImage = await getImage({ src: introPoster, format: 'jpeg', width: 1200, height: 630, fit: 'cover' });
+const firstFrame = await getImage({ src: introFirst, format: 'webp', width: 1148 });
+const titleFrame = await getImage({ src: introLast, format: 'webp', width: 1148 });
+const socialImage = await getImage({ src: introLast, format: 'jpeg', width: 1200, height: 630, fit: 'cover' });
 ---
 
 <Base
@@ -20,41 +22,60 @@ const socialImage = await getImage({ src: introPoster, format: 'jpeg', width: 12
 >
 	<JufiHeader />
 	<main id="main">
-		<section class="section container intro">
-			<p class="eyebrow">JUFI</p>
-			<h1>Joel Ureña Films Incorporated</h1>
-			<p class="lede">
-				Short films, a documentary and class projects I made from 2016 to 2020, from a documentary made with HBO to a
-				film that’s part of the Jim Henson exhibit at the Museum of the Moving Image.
-			</p>
+		<h1 class="visually-hidden">JUFI – Joel Ureña Films Incorporated</h1>
 
-			<div class="showcase">
-				<figure class="logo">
-					<!-- Playback is started by the script below, so visitors who prefer reduced motion only get the poster. -->
-					<video id="jufi-intro" muted loop playsinline preload="none" width="1148" height="800" poster={poster.src}>
-						<source src="/media/jufi-intro.av1.webm" type='video/webm; codecs="av01.0.05M.08"' />
-						<source src="/media/jufi-intro.webm" type='video/webm; codecs="vp9"' />
-						<source src="/media/jufi-intro.mp4" type="video/mp4" />
-					</video>
-					<figcaption class="visually-hidden">Animated JUFI logo</figcaption>
-					<button type="button" class="pause" hidden>Pause animation</button>
-				</figure>
-				<div>
-					<YouTube
-						id={reel.youtubeId!}
-						title="Welcome to JUFI – Film Reel"
-						poster={reel.thumbnail}
-						priority
-						sizes="(min-width: 60rem) 34rem, 100vw"
-					/>
-					<p class="caption">My film reel: just about all of my completed films in a one-minute compilation.</p>
-				</div>
-			</div>
+		<section class="container hero" aria-label="Welcome to JUFI">
+			<!-- The logo animation plays once and holds on its last frame, the "JUFI – Joel Urena Films
+			     Incorporated" title, like the original GIF (which had no loop). The title frame is the default
+			     poster, so it's what shows without JavaScript, with reduced motion, or if the browser blocks
+			     autoplay; the script below starts the animation only when it can play. -->
+			<video
+				id="jufi-intro"
+				class="logo"
+				muted
+				playsinline
+				preload="none"
+				width="1148"
+				height="800"
+				poster={titleFrame.src}
+				data-first-frame={firstFrame.src}
+				aria-hidden="true"
+			>
+				<source src="/media/jufi-intro.av1.webm" type='video/webm; codecs="av01.0.05M.08"' />
+				<source src="/media/jufi-intro.webm" type='video/webm; codecs="vp9"' />
+				<source src="/media/jufi-intro.mp4" type="video/mp4" />
+			</video>
+			<script is:inline>
+				(() => {
+					const video = document.getElementById('jufi-intro');
+					if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+					const titlePoster = video.poster;
+					const showTitle = () => {
+						video.querySelectorAll('source').forEach((s) => s.remove());
+						video.poster = titlePoster;
+						video.load();
+					};
+					video.poster = video.dataset.firstFrame;
+					video.preload = 'auto';
+					// Blocked autoplay rejects play(); if every source fails, the last one fires 'error'.
+					video.querySelector('source:last-of-type').addEventListener('error', showTitle);
+					video.play().catch(showTitle);
+				})();
+			</script>
+			<YouTube
+				id={reel.youtubeId!}
+				title="Welcome to JUFI – Film Reel"
+				poster={reel.thumbnail}
+				priority
+				sizes="(min-width: 60rem) 34rem, 100vw"
+			/>
 		</section>
+
+		<hr class="rule" />
 
 		<section class="section container" aria-labelledby="notable-title">
 			<h2 id="notable-title">Notable films</h2>
-			<p class="lede">My most recent and notable films.</p>
+			<p class="lede">My most recent and notable films that I’ve worked on.</p>
 			<div class="grid notable">
 				{notableVideos.map((video) => <VideoCard video={video} excerpt />)}
 			</div>
@@ -64,76 +85,30 @@ const socialImage = await getImage({ src: introPoster, format: 'jpeg', width: 12
 		</section>
 	</main>
 	<Footer />
-
-	<script>
-		const video = document.querySelector<HTMLVideoElement>('#jufi-intro');
-		const button = document.querySelector<HTMLButtonElement>('.pause');
-		const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
-		const saveData = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData;
-		if (video && button && !reducedMotion && !saveData) {
-			const play = () => {
-				video.play().catch(() => {});
-				button.textContent = 'Pause animation';
-			};
-			const pause = () => {
-				video.pause();
-				button.textContent = 'Play animation';
-			};
-			button.hidden = false;
-			button.addEventListener('click', () => (video.paused ? play() : pause()));
-			play();
-		}
-	</script>
 </Base>
 
 <style>
-	.intro h1 {
-		font-size: clamp(2rem, 5vw, 3.25rem);
-	}
-
-	.showcase {
+	.hero {
 		display: grid;
 		gap: 1.5rem;
-		margin-top: 2.5rem;
+		padding-block: clamp(2rem, 6vw, 4rem);
 		grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr));
-		align-items: start;
+		align-items: center;
 	}
 
 	.logo {
-		position: relative;
-		margin: 0;
-		background: #000;
-		border-radius: var(--radius);
-		overflow: hidden;
-	}
-
-	.logo video {
 		width: 100%;
 		aspect-ratio: 1148 / 800;
-		object-fit: cover;
+		object-fit: contain;
+		background: #000;
 	}
 
-	.pause {
-		position: absolute;
-		right: 0.6rem;
-		top: 0.6rem;
-		padding: 0.3rem 0.7rem;
-		border-radius: 999px;
-		border: 1px solid var(--border);
-		background: rgb(0 0 0 / 0.7);
-		color: var(--muted);
-		font: 600 0.75rem var(--font-display);
-		cursor: pointer;
-	}
-
-	.pause:hover {
-		color: var(--text);
-	}
-
-	.caption {
-		color: var(--muted);
-		font-size: 0.9375rem;
-		margin-top: 0.75rem;
+	/* Full-width white line between the hero and the films, as on the 2020 page. */
+	.rule {
+		height: 3px;
+		margin: 0;
+		border: 0;
+		background: var(--text);
 	}
 
 	.notable {

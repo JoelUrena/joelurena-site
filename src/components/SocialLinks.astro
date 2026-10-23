@@ -7,7 +7,7 @@ import Icon from './Icon.astro';
 	{
 		site.socials.map((s) => (
 			<li>
-				<a href={s.href} aria-label={s.label} title={s.label}>
+				<a class="angular" href={s.href} aria-label={s.label} title={s.label}>
 					<Icon name={s.icon} />
 				</a>
 			</li>
@@ -25,19 +25,18 @@ import Icon from './Icon.astro';
 		padding: 0;
 	}
 
+	/* Angular tile: the shape comes from .angular in global.css. */
 	a {
+		--cut: 0.45rem;
 		display: grid;
 		place-items: center;
 		width: 2.75rem;
 		height: 2.75rem;
-		border-radius: 50%;
-		border: 1px solid var(--border);
 		color: var(--text);
-		transition: color 0.15s, border-color 0.15s;
 	}
 
 	a:hover {
-		color: var(--gold-bright);
-		border-color: var(--gold);
+		--fill: var(--silver);
+		color: #000;
 	}
 </style>

@@ -46,7 +46,7 @@ const href = `/jufi/videos/${video.slug}/`;
 
 	.card:hover,
 	.card:focus-within {
-		border-color: var(--gold);
+		border-color: var(--muted);
 		transform: translateY(-2px);
 	}
 
@@ -83,12 +83,12 @@ const href = `/jufi/videos/${video.slug}/`;
 	}
 
 	.card:has(.title a:focus-visible) {
-		outline: 3px solid var(--gold-bright);
+		outline: 2px solid #fff;
 		outline-offset: 3px;
 	}
 
 	.date {
-		color: var(--gold);
+		color: var(--muted);
 		font-size: 0.875rem;
 		margin: 0;
 	}

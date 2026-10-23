@@ -7,7 +7,11 @@ export default defineConfig({
 	site: 'https://joelurena.com',
 	trailingSlash: 'always',
 	integrations: [
-		sitemap({ filter: (page) => !page.endsWith('/404/') }),
+		sitemap({
+			filter: (page) => !page.endsWith('/404/'),
+			// The Unity game lives in public/, so Astro doesn't know about it.
+			customPages: ['https://joelurena.com/games/ocelot-override/'],
+		}),
 		legacyRedirects({ redirects }),
 	],
 });

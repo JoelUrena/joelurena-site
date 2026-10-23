@@ -40,7 +40,7 @@ function redirectPage(target, site, title) {
 <meta property="og:image" content="${escape(new URL('/og-image.jpg', site).href)}">
 <meta http-equiv="refresh" content="0; url=${href}">
 <script>location.replace(${JSON.stringify(target)} + location.hash)</script>
-<style>body{background:#050506;color:#f3f3f4;font:1.0625rem/1.6 system-ui,sans-serif;display:grid;place-items:center;min-height:90vh;margin:0;padding:0 1rem;overflow-wrap:anywhere}a{color:#e6b923}</style>
+<style>body{background:#000;color:#f2f2f2;font:1.0625rem/1.6 system-ui,sans-serif;display:grid;place-items:center;min-height:90vh;margin:0;padding:0 1rem;overflow-wrap:anywhere}a{color:#f2f2f2}</style>
 </head>
 <body><p>This page has moved to <a href="${href}">${escape(absolute)}</a>.</p></body>
 </html>

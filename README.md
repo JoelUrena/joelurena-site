@@ -38,7 +38,8 @@ contact section on the homepage. Send résumés directly instead.
 ## Old URLs
 
 The 2020 site's short links are printed on résumés (`joelurena.com/JUFI`, `/code`, `/reel`, …), so they must never break.
-`src/data/legacy.mjs` lists every URL the old site had, and the build writes a small redirect page for each one
+`src/data/legacy.mjs` lists every URL the old site had (plus a few new short links like `/ocelot-override`), and the build
+writes a small redirect page for each one
 (`integrations/legacy-redirects.mjs`). `404.astro` also catches odd capitalisation like `/Jufi`.
 
 GitHub Pages is case-sensitive (`/CODE` and `/code` are different files) but macOS usually isn't, so the capitalised

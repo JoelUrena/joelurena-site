@@ -56,7 +56,7 @@ function check(from, url) {
 }
 
 for (const file of [...files(dist, '.html'), ...files(dist, '.css')]) {
-	if (file.includes('/games/')) continue; // Unity's own player
+	if (file.includes('/games/ocelot-override/')) continue; // Unity's own player
 	const text = readFileSync(file, 'utf8');
 	const from = file.slice(dist.length - 1);
 	for (const [, url] of text.matchAll(/(?:href|src|poster|content)="([^"]*)"/g)) check(from, url);
